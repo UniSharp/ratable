@@ -66,4 +66,24 @@ class RatableTest extends TestCase
 
        $this->assertDatabaseMissing('rates', $rate->toArray());
     }
+
+    public function testAverage()
+    {
+        $grades = [10, 5];
+        $movie = Movie::create(['name' => 'foo']);
+
+        $movie->rates()->create([
+            'user_id' => User::create(['name' => 'foo'])->id,
+            'grade' => $grades[0],
+            'description' => 'Great'
+        ]);
+
+        $movie->rates()->create([
+            'user_id' => User::create(['name' => 'foo'])->id,
+            'grade' => $grades[1],
+            'description' => 'So So'
+        ]);
+
+        $this->assertEquals(array_sum($grades)/count($grades), $movie->average());
+    }
 }
