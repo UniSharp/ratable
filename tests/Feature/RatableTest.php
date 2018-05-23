@@ -86,4 +86,19 @@ class RatableTest extends TestCase
 
         $this->assertEquals(array_sum($grades)/count($grades), $movie->average());
     }
+
+    public function testDeleteModel()
+    {
+        $movie = Movie::create(['name' => 'foo']);
+        $rate = $movie->rates()->create([
+            'user_id' => User::create(['name' => 'foo'])->id,
+            'description' => 'Great'
+        ]);
+
+        $this->assertDatabaseHas('rates', $rate->toArray());
+
+        $movie->delete();
+
+        $this->assertDatabaseMissing('rates', $rate->toArray());
+    }
 }
